@@ -11,8 +11,14 @@
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
+import * as PostalMime from 'postal-mime';
+
 export default {
-	async fetch(request, env, ctx): Promise<Response> {
-		return new Response("Hello World!");
-	},
-} satisfies ExportedHandler<Env>;
+  async email(message, env, ctx): Promise<Response> {
+    const parser = new PostalMime.default();
+    const rawEmail = new Response(message.raw);
+    const email = await parser.parse(await rawEmail.arrayBuffer());
+    console.log(email);
+  },
+} satisfies ExportedHandler;
+
